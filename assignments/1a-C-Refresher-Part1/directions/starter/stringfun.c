@@ -231,6 +231,7 @@ int main(int argc, char *argv[]){
             //            characters because the string is reversed 
             //            in place.  Briefly explain why the string 
             //            is reversed in place - place in a comment
+            // Because each character occupies a specific space in memory, so the letters are switching places.
             break;
         case 'w':
             printf("Word Print\n----------\n");
@@ -239,9 +240,7 @@ int main(int argc, char *argv[]){
             //          printed by that function
             break;
 
-        //TODO: #6. What is the purpose of the default option here?
-        //          Please describe replacing this TODO comment with
-        //          your thoughts.
+        //TODO: #6. The purpose is to catch when an invalid argument is used. 
         default:
             usage(argv[0]);
             printf("Invalid option %c provided, exiting!\n", opt);
@@ -249,5 +248,6 @@ int main(int argc, char *argv[]){
     }
     //TODO: #7. Why did we place a break statement on each case
     //          option, and did not place one on default.  What
-    //          would happen if we forgot the break statem
+    //          would happen if we forgot the break statement?
+    // It would fall through to the next option instead of exiting the switch statement. We don't put it on default because there is no statement afterwards and it is unnecessary.
   }
