@@ -16,8 +16,39 @@ int  count_words(char *, int, int);
 
 
 int setup_buff(char *buff, char *user_str, int len){
+
     //TODO: #4:  Implement the setup buff as per the directions
-    return 0; //for now just so the code compiles. 
+    int user_str_len = 0;
+    while (user_str[user_str_len] != '\0') {
+        user_str_len++;
+    }
+
+    if (user_str_len > len) {
+        return -1; // User supplied string is too large
+    }
+
+    int i = 0, j = 0;
+    int last_was_space = 0;
+
+    while (user_str[i] != '\0' && j < len) {
+        // Custom check for whitespace characters
+        if (user_str[i] == ' ') {
+            if (!last_was_space && j < len - 1) {
+                buff[j++] = ' ';
+                last_was_space = 1;
+            }
+        } else {
+            buff[j++] = user_str[i];
+            last_was_space = 0;
+        }
+        i++;
+    }
+
+    while (j < len) {
+        buff[j++] = '.';
+    }
+
+    return i; // Return the length of the user supplied string
 }
 
 void print_buff(char *buff, int len){
@@ -34,8 +65,42 @@ void usage(char *exename){
 }
 
 int count_words(char *buff, int len, int str_len){
-    //YOU MUST IMPLEMENT
-    return 0;
+    int wc = 0;
+    int word_start = 0;
+
+    for (int i = 0; i < str_len; i++) { 
+	    char current_char = buff[i]; 
+	    if (!word_start) { 
+		if (current_char == ' ') { 
+			continue;
+		    }
+		    else { 
+			wc++; 
+			word_start = 1; }
+	    } else { 
+		    if (current_char == ' ') { 
+			    word_start = 0; 
+		    } 
+	    }
+    }
+    return wc;
+}
+
+void  reverse_string(char *buff, int len, int str_len){
+    int end_idx = str_len-1;        
+    int start_idx = 0;
+    char tmp_char;
+
+    while (end_idx > start_idx) {
+	    tmp_char = buff[start_idx];
+	    buff[start_idx] = buff[end_idx];
+	    buff[end_idx] = tmp_char;
+
+	    start_idx++;
+	    end_idx--;
+    }
+
+    return;
 }
 
 //ADD OTHER HELPER FUNCTIONS HERE FOR OTHER REQUIRED PROGRAM OPTIONS
@@ -48,8 +113,8 @@ int main(int argc, char *argv[]){
     int  rc;                //used for return codes
     int  user_str_len;      //length of user supplied string
 
-    //TODO:  #1. WHY IS THIS SAFE, aka what if arv[1] does not exist?
-    //      PLACE A COMMENT BLOCK HERE EXPLAINING
+    //TODO:  #1. WHY IS THIS SAFE, aka what if argv[1] does not exist?
+    //      Because if argv[1] didn't exist, the first test in the if statement would evaluate to true, so the section after the or (||) would be ignored.
     if ((argc < 2) || (*argv[1] != '-')){
         usage(argv[0]);
         exit(1);
@@ -66,7 +131,7 @@ int main(int argc, char *argv[]){
     //WE NOW WILL HANDLE THE REQUIRED OPERATIONS
 
     //TODO:  #2 Document the purpose of the if statement below
-    //      PLACE A COMMENT BLOCK HERE EXPLAINING
+    //      Because if you don't have three arguments, then you don't have a string. You are essentially telling the program what to do, but not what to do it with. 
     if (argc < 3){
         usage(argv[0]);
         exit(1);
@@ -77,8 +142,11 @@ int main(int argc, char *argv[]){
     //TODO:  #3 Allocate space for the buffer using malloc and
     //          handle error if malloc fails by exiting with a 
     //          return code of 99
-    // CODE GOES HERE FOR #3
-
+    
+    buff = malloc(BUFFER_SZ);
+    if (buff == NULL){
+        exit(99);
+    }
 
     user_str_len = setup_buff(buff, input_string, BUFFER_SZ);     //see todos
     if (user_str_len < 0){
@@ -95,9 +163,14 @@ int main(int argc, char *argv[]){
             }
             printf("Word Count: %d\n", rc);
             break;
-
-        //TODO:  #5 Implement the other cases for 'r' and 'w' by extending
-        //       the case statement options
+        case 'r':
+            reverse_string(buff, BUFFER_SZ, user_str_len);
+            printf("Reversed string: %s\n", buff);
+            break;
+        case 'w':
+            printf("Word Print\n----------\n");
+            word_print(buff);
+            break;
         default:
             usage(argv[0]);
             exit(1);
@@ -105,6 +178,7 @@ int main(int argc, char *argv[]){
 
     //TODO:  #6 Dont forget to free your buffer before exiting
     print_buff(buff,BUFFER_SZ);
+    free(buff);
     exit(0);
 }
 
@@ -114,4 +188,4 @@ int main(int argc, char *argv[]){
 //          is a good practice, after all we know from main() that 
 //          the buff variable will have exactly 50 bytes?
 //  
-//          PLACE YOUR ANSWER HERE
+//          It is good to be safe and make sure we check the buffer size in case we somehow ended up with less than 50 bytes in the buffer.
