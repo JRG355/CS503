@@ -103,6 +103,43 @@ void  reverse_string(char *buff, int len, int str_len){
     return;
 }
 
+void  word_print(char *str){
+    int wc = 0;         //counts words
+    int wlen = 0;       //length of current word
+    int word_start = 0;    //am I at the start of a new word
+    char current_char = str[0];
+    int i = 0;
+    // Please implement
+    while (current_char != '\0') {
+	    current_char = str[i];
+
+	    if (!word_start) {
+		    if (current_char == ' ') {
+			    continue;
+		    } else { 
+			    wc++;
+			    word_start = 1;
+			    wlen = 0;
+			    printf("%d. ",wc);
+		    }
+	    }
+
+	    if (word_start) {
+		    if (current_char != ' ') { 
+			    printf("%c", current_char);
+			    wlen++;
+		    }
+
+		    if (current_char == ' '|| current_char == '\0') { 
+			    printf(" (%d)\n", wlen);
+			    word_start = 0;
+			    wlen = 0;
+		    }
+	    }
+        i++;
+    }
+}
+
 //ADD OTHER HELPER FUNCTIONS HERE FOR OTHER REQUIRED PROGRAM OPTIONS
 
 int main(int argc, char *argv[]){
